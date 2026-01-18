@@ -28,10 +28,10 @@
   <p id="resultat"></p>
 
 <script>
-  // 🔧 ENDRE DISSE TIL DITT STED
-  const riktigLat = 59.96397;   // Maurstien 6, 0880 Oslo
-  const riktigLon = 10.76994;
-  const tillattAvstand = 30;  // meter
+  // MÅL: Maurstien 6, 0880 Oslo
+  const riktigLat = 59.960000;   // 59°57′36″ N
+  const riktigLon = 10.756944444; // 10°45′25″ Ø
+  const tillattAvstand = 40;  // meter
 
   function sjekkPosisjon() {
     if (!navigator.geolocation) {
@@ -56,7 +56,8 @@
             "<span class='nei'>❌ Du er " + Math.round(d) + " m unna</span>";
         }
       },
-      () => resultat.textContent = "Kunne ikke hente posisjon."
+      () => resultat.textContent = "Kunne ikke hente posisjon.",
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
 
