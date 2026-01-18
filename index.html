@@ -33,9 +33,13 @@
   const riktigLon = 10.756944444; // 10°45′25" Ø
   const tillattAvstand = 40;  // meter
 
+  // Hent resultat-elementet én gang
+  const resultat = document.getElementById('resultat');
+
   function sjekkPosisjon() {
     if (!navigator.geolocation) {
       resultat.textContent = "GPS støttes ikke på denne enheten.";
+      resultat.className = 'nei';
       return;
     }
 
@@ -48,15 +52,24 @@
           riktigLon
         );
 
-        if (d < tillattAvstand) {
-          resultat.innerHTML =
-            "<span class='ok'>🎉 Riktig sted! Du er ved Maurstien 6, 0880 Oslo. Neste kode er: 742</span>";
+        const avrundet = Math.round(d);
+        const nøyaktighet = pos.coords.accuracy ? Math.round(pos.coords.accuracy) + " m" : "ukjent nøyaktighet";
+
+        if (d <= tillattAvstand) {
+          // Setter tekst og klasse separat (unngå innerHTML med eksternt innhold)
+          resultat.className = 'ok';
+          resultat.textContent = `🎉 Riktig sted! Du er ved Maurstien 6, 0880 Oslo. Neste kode er: 742 (GPS-nøyaktighet: ${nøyaktighet})`;
         } else {
-          resultat.innerHTML =
-            "<span class='nei'>❌ Du er " + Math.round(d) + " m unna</span>";
+          resultat.className = 'nei';
+          resultat.textContent = `❌ Du er ${avrundet} m unna (GPS-nøyaktighet: ${nøyaktighet})`;
         }
       },
-      () => resultat.textContent = "Kunne ikke hente posisjon.",
+      err => {
+        // Gi mer detaljer når tilgjengelig
+        const msg = err && err.message ? err.message : "Kunne ikke hente posisjon.";
+        resultat.className = 'nei';
+        resultat.textContent = `Feil ved henting av posisjon: ${msg}`;
+      },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
