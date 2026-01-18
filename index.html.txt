@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Geo-rebus</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont;
+      text-align: center;
+      padding: 2rem;
+    }
+    button {
+      font-size: 1.2rem;
+      padding: 1rem 2rem;
+    }
+    .ok { color: green; font-weight: bold; }
+    .nei { color: red; }
+  </style>
+</head>
+<body>
+
+  <h1>📍 Geo-rebus</h1>
+  <p>Finn stedet – når du er nær nok får du neste ledetråd.</p>
+
+  <button onclick="sjekkPosisjon()">Sjekk hvor jeg er</button>
+
+  <p id="resultat"></p>
+
+<script>
+  // 🔧 ENDRE DISSE TIL DITT STED
+  const riktigLat = 58.6000;   // eksempel Fjällbacka-ish
+  const riktigLon = 11.2830;
+  const tillattAvstand = 30;  // meter
+
+  function sjekkPosisjon() {
+    if (!navigator.geolocation) {
+      resultat.textContent = "GPS støttes ikke på denne enheten.";
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const d = avstand(
+          pos.coords.latitude,
+          pos.coords.longitude,
+          riktigLat,
+          riktigLon
+        );
+
+        if (d < tillattAvstand) {
+          resultat.innerHTML =
+            "<span class='ok'>🎉 Riktig sted! Neste kode er: 742</span>";
+        } else {
+          resultat.innerHTML =
+            "<span class='nei'>❌ Du er " + Math.round(d) + " m unna</span>";
+        }
+      },
+      () => resultat.textContent = "Kunne ikke hente posisjon."
+    );
+  }
+
+  function avstand(lat1, lon1, lat2, lon2) {
+    const R = 6371000;
+    const toRad = x => x * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+
+    const a =
+      Math.sin(dLat/2)**2 +
+      Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon/2)**2;
+
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
+</script>
+
+</body>
+</html>
