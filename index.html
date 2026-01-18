@@ -29,8 +29,8 @@
 
 <script>
   // 🔧 ENDRE DISSE TIL DITT STED
-  const riktigLat = 58.6000;   // eksempel Fjällbacka-ish
-  const riktigLon = 11.2830;
+  const riktigLat = 59.96397;   // Maurstien 6, 0880 Oslo
+  const riktigLon = 10.76994;
   const tillattAvstand = 30;  // meter
 
   function sjekkPosisjon() {
@@ -50,7 +50,7 @@
 
         if (d < tillattAvstand) {
           resultat.innerHTML =
-            "<span class='ok'>🎉 Riktig sted! Neste kode er: 742</span>";
+            "<span class='ok'>🎉 Riktig sted! Du er ved Maurstien 6, 0880 Oslo. Neste kode er: 742</span>";
         } else {
           resultat.innerHTML =
             "<span class='nei'>❌ Du er " + Math.round(d) + " m unna</span>";
